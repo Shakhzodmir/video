@@ -1,7 +1,10 @@
-<h2 class="sr-only">Animated 지페 app intro: about forty feature-screen mockups burst out of the central phone in a tight grid pattern around it, hold, then return one by one. A final title card fades in.</h2>
+
 
 <style>
-.jpx-stage { position: relative; width: 100%; max-width: 660px; height: 400px; margin: 0 auto; background: #1A2B5C; border-radius: var(--border-radius-lg); overflow: hidden; }
+.jpx-stage { position: relative; width: 100%; max-width: 660px; height: 400px; margin: 0 auto; background: #1A2B5C; border-radius: var(--border-radius-lg); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.jpx-stage:fullscreen { max-width: none; width: 100vw; height: 100vh; border-radius: 0; }
+.jpx-stage:-webkit-full-screen { max-width: none; width: 100vw; height: 100vh; border-radius: 0; }
+.jpx-canvas { position: relative; width: 660px; height: 400px; flex-shrink: 0; transform-origin: center; }
 .jpx-cam { position: absolute; inset: 0; transform-origin: center; animation: jpx-cam 7s ease-in-out infinite; }
 .jpx-blob-a, .jpx-blob-b { position: absolute; background: rgba(255,255,255,0.04); border-radius: 50%; }
 .jpx-blob-a { width: 320px; height: 320px; top: -100px; right: -80px; }
@@ -36,20 +39,23 @@
 </style>
 
 <div class="jpx-stage" id="jpx-stage">
-  <div class="jpx-cam" id="jpx-cam">
-    <div class="jpx-blob-a"></div>
-    <div class="jpx-blob-b"></div>
-    <div id="jpx-screens"></div>
-    <div class="jpx-phone">
-      <img class="jpx-phone-logo" src="지페11.svg" alt="지페" />
+  <div class="jpx-canvas" id="jpx-canvas">
+    <div class="jpx-cam" id="jpx-cam">
+      <div class="jpx-blob-a"></div>
+      <div class="jpx-blob-b"></div>
+      <div id="jpx-screens"></div>
+      <div class="jpx-phone">
+        <img class="jpx-phone-logo" src="지페11.svg" alt="지페" />
+      </div>
     </div>
   </div>
 </div>
 
-<div class="jpx-tag">YouTube · 16:10 \u043f\u0440\u0435\u0432\u044c\u044e · ~7\uc0c8\ub2c8 \u043b\u0443\u043f · <b>40 \u044d\u043a\u0440\u0430\u043d\u043e\u0432</b></div>
+
 
 <div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px;">
-  <button id="jpx-replay" type="button" aria-label="Replay"><i class="ti ti-refresh" aria-hidden="true" style="font-size:14px; vertical-align:-2px; margin-right:6px"></i>Перезапустить</button>
+  <button id="jpx-replay" type="button" aria-label="Replay"><i class="ti ti-refresh" aria-hidden="true" style="font-size:14px; vertical-align:-2px; margin-right:6px"></i>CHANGE</button>
+  <button id="jpx-fullscreen" type="button" aria-label="Fullscreen"><i class="ti ti-maximize" aria-hidden="true" style="font-size:14px; vertical-align:-2px; margin-right:6px"></i>FULL SCREEN</button>
 </div>
 
 <script>
@@ -88,4 +94,28 @@ document.getElementById('jpx-replay').addEventListener('click', function() {
     el.style.animation = '';
   });
 });
+
+function fitFullscreen() {
+  var stage = document.getElementById('jpx-stage');
+  var canvas = document.getElementById('jpx-canvas');
+  var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsEl === stage) {
+    var s = Math.min(window.innerWidth / 660, window.innerHeight / 400);
+    canvas.style.transform = 'scale(' + s + ')';
+  } else {
+    canvas.style.transform = '';
+  }
+}
+document.getElementById('jpx-fullscreen').addEventListener('click', function() {
+  var stage = document.getElementById('jpx-stage');
+  var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsEl) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  } else {
+    (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+  }
+});
+document.addEventListener('fullscreenchange', fitFullscreen);
+document.addEventListener('webkitfullscreenchange', fitFullscreen);
+window.addEventListener('resize', fitFullscreen);
 </script>
