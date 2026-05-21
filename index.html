@@ -1,0 +1,91 @@
+<h2 class="sr-only">Animated 지페 app intro: about forty feature-screen mockups burst out of the central phone in a tight grid pattern around it, hold, then return one by one. A final title card fades in.</h2>
+
+<style>
+.jpx-stage { position: relative; width: 100%; max-width: 660px; height: 400px; margin: 0 auto; background: #1A2B5C; border-radius: var(--border-radius-lg); overflow: hidden; }
+.jpx-cam { position: absolute; inset: 0; transform-origin: center; animation: jpx-cam 7s ease-in-out infinite; }
+.jpx-blob-a, .jpx-blob-b { position: absolute; background: rgba(255,255,255,0.04); border-radius: 50%; }
+.jpx-blob-a { width: 320px; height: 320px; top: -100px; right: -80px; }
+.jpx-blob-b { width: 360px; height: 360px; bottom: -120px; left: -90px; }
+.jpx-phone { position: absolute; left: 50%; top: 50%; width: 110px; height: 195px; background-color: #2A4585; border: 2px solid #0B1838; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 20; transform: translate(-50%, -50%); animation: jpx-phone 7s ease-in-out infinite; }
+.jpx-phone-logo { width: 95px; height: auto; display: block; }
+.jpx-screen { position: absolute; left: 50%; top: 50%; width: 50px; z-index: 10; opacity: 0; transform: translate(-50%, -50%) scale(0.05); animation: jpx-burst 7s cubic-bezier(0.34, 1.15, 0.64, 1) infinite; }
+.jpx-screen img { width: 100%; height: auto; display: block; }
+
+@keyframes jpx-burst {
+  0%, 4% { transform: translate(-50%, -50%) scale(0.05); opacity: 0; filter: blur(0); }
+  10% { opacity: 0.7; filter: blur(7px); }
+  22%, 58% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1); opacity: 1; filter: blur(0); }
+  66% { transform: translate(calc(-50% + calc(var(--tx) * 0.4)), calc(-50% + calc(var(--ty) * 0.4))) scale(0.4); opacity: 0.65; filter: blur(4px); }
+  72%, 100% { transform: translate(-50%, -50%) scale(0.05); opacity: 0; filter: blur(0); }
+}
+@keyframes jpx-phone {
+  0%, 4% { transform: translate(-50%, -50%) scale(1); background-color: #2A4585; border-color: #0B1838; }
+  16% { transform: translate(-50%, -50%) scale(0.88); background-color: #2A4585; border-color: #0B1838; }
+  38% { transform: translate(-50%, -50%) scale(1); background-color: #2A4585; border-color: #0B1838; }
+  72% { transform: translate(-50%, -50%) scale(1.15); background-color: #2A4585; border-color: #0B1838; }
+  78% { transform: translate(-50%, -50%) scale(1); background-color: #2A4585; border-color: #0B1838; }
+  92%, 100% { transform: translate(-50%, -50%) scale(3.2); background-color: rgba(42,69,133,0); border-color: rgba(11,24,56,0); }
+}
+@keyframes jpx-cam {
+  0%, 16% { transform: scale(1); }
+  38%, 55% { transform: scale(0.92); }
+  80%, 100% { transform: scale(1); }
+}
+.jpx-tag { text-align: center; color: var(--color-text-secondary); font-size: 13px; margin-top: 1rem; }
+.jpx-tag b { color: var(--color-text-primary); font-weight: 500; }
+</style>
+
+<div class="jpx-stage" id="jpx-stage">
+  <div class="jpx-cam" id="jpx-cam">
+    <div class="jpx-blob-a"></div>
+    <div class="jpx-blob-b"></div>
+    <div id="jpx-screens"></div>
+    <div class="jpx-phone">
+      <img class="jpx-phone-logo" src="지페11.svg" alt="지페" />
+    </div>
+  </div>
+</div>
+
+<div class="jpx-tag">YouTube · 16:10 \u043f\u0440\u0435\u0432\u044c\u044e · ~7\uc0c8\ub2c8 \u043b\u0443\u043f · <b>40 \u044d\u043a\u0440\u0430\u043d\u043e\u0432</b></div>
+
+<div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px;">
+  <button id="jpx-replay" type="button" aria-label="Replay"><i class="ti ti-refresh" aria-hidden="true" style="font-size:14px; vertical-align:-2px; margin-right:6px"></i>Перезапустить</button>
+</div>
+
+<script>
+var TOTAL_ASSETS = 48;
+var cols = 9, rows = 5, colSp = 75, rowSp = 72;
+var positions = [];
+for (var r = 0; r < rows; r++) {
+  for (var c = 0; c < cols; c++) {
+    var x = (c - 4) * colSp;
+    var y = (r - 2) * rowSp;
+    var isCenterCol = (x === 0);
+    var isMidRow = (Math.abs(y) <= rowSp);
+    var isPhoneEdge = (Math.abs(x) === colSp && y === 0);
+    if ((isCenterCol && isMidRow) || isPhoneEdge) continue;
+    positions.push({ x: x, y: y });
+  }
+}
+var host = document.getElementById('jpx-screens');
+positions.forEach(function(p, i) {
+  var d = document.createElement('div');
+  d.className = 'jpx-screen';
+  d.style.setProperty('--tx', p.x + 'px');
+  d.style.setProperty('--ty', p.y + 'px');
+  d.style.animationDelay = (i * 0.03) + 's';
+  var idx = i % TOTAL_ASSETS;
+  var imgName = idx === 0 ? 'Container.png' : 'Container-' + idx + '.png';
+  d.innerHTML = '<img src="assets/' + imgName + '" alt="" />';
+  host.appendChild(d);
+});
+
+document.getElementById('jpx-replay').addEventListener('click', function() {
+  var els = document.querySelectorAll('#jpx-stage .jpx-screen, #jpx-stage .jpx-phone, #jpx-stage .jpx-cam');
+  els.forEach(function(el) {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+  });
+});
+</script>
